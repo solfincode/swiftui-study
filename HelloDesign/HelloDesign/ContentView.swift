@@ -11,47 +11,98 @@ import SwiftUI
 struct ContentView: View {
     @State var show = false
     @State var viewState = CGSize.zero
+    @State var showCard = false
+    @State var bottomState = CGSize.zero
+    @State var showFull = false
     var body: some View {
         ZStack {
             TitleView()
                 .blur(radius: show ? 20 : 0)
-                .animation(.default)
+                .opacity(showCard ? 0.4 : 1)
+                .animation(
+                    Animation
+                        .default
+                        .delay(0.1)
+                        .speed(2)
+            )
+            
             BackCardView()
-                .offset(x:0,y:-80)
+                .background(Color.black)
+                .cornerRadius(20)
+                .shadow(radius: 20)
+                .offset(x:0,y:-100)
+                .offset(y:showCard ? -120 : -5)
                 .scaleEffect(0.9)
-                .rotationEffect(.degrees(show ? 0 : 10))
-//                .rotation3DEffect(Angle(degrees: 5),axis:(x:10.0,y:10.0,z:0))
-                .blendMode(.hardLight)
+                .rotationEffect(.degrees(showCard ? 0 : 10))
+
+//                .blendMode(.hardLight)
                 .animation(.easeInOut(duration:0.5))
             BackCardView()
-                .offset(x:0,y:show ? -200 : -50)
-                .offset(x:viewState.width,y:viewState.height)
+                .background(Color.green)
+                .cornerRadius(20)
+                .shadow(radius: 20)
+                .offset(x:0,y:-20)
+//                .offset(y:showCard ? -100 : -20)
+//                .offset(x:viewState.width,y:viewState.height)
+                .offset(x:0,y:showCard ? -100 : -15)
                 .scaleEffect(0.95)
-                .rotationEffect(.degrees(show ? 0 : 5))
-//                .rotation3DEffect(Angle(degrees: 5),axis:(x:10.0,y:10.0,z:0))
-                .blendMode(.hardLight)
+                .rotationEffect(.degrees(showCard ? 0 : 5))
+//                .blendMode(.hardLight)
                 .animation(.easeInOut(duration:0.3))
             CardView()
                 .offset(x:viewState.width,y:viewState.height)
                 .blendMode(.hardLight)
                 .animation(.spring(response: 0.3, dampingFraction: 0.6, blendDuration: 0))
+                
+                .frame(width:showCard ? 350 : 340.0,height:220.0)
+                .background(Color.blue)
+                .cornerRadius(20)
+                .offset(y:showCard ? -50 : 0)
+                .shadow(radius:20)
+                .padding(.top,20)
+                .padding(.horizontal,20)
                 .onTapGesture {
-                    self.show.toggle()
-            }
-            .gesture(
-                DragGesture()
-                    .onChanged{
-                        value in self.viewState = value.translation
+                    self.showCard.toggle()
                 }
-                .onEnded{
-                    value in self.viewState = .zero
-                }
-            )
+                .gesture(
+                    DragGesture()
+                        .onChanged{value in
+                            self.viewState = value.translation
+                    }
+                    .onEnded{
+                        value in self.viewState = .zero
+                    }
+                )
+            //get coordinate
+//            Text("\(bottomState.height)").offset(y:-300)
             
             BottomCardView()
-                .offset(x:0,y:show ? -50 : 300)
-//                .blur(radius: show ? 20 : 0)
-                .animation(.default)
+                .offset(x:0,y:showCard ? 5 : 300)
+                .offset(y:bottomState.height)
+                .animation(.timingCurve(0.2, 0.28, 0.2, 0.1))
+                .gesture(
+                    DragGesture().onChanged{value in
+                        self.bottomState = value.translation
+                        if self.showFull{
+                            self.bottomState.height += -300
+                        }
+                        
+                    }
+                    .onEnded{value in
+                        if self.bottomState.height>50{
+                            self.showCard = false
+                        }
+                        if (self.bottomState.height < -100 && !self.showFull) || (self.bottomState.height < -250 && self.showFull){
+                            self.showFull = true
+                            self.bottomState.height = -300
+                        }
+                        else{
+                            self.bottomState = .zero
+                            self.showFull = false
+                        }
+                       
+                    }
+            )
         }
     }
 }
@@ -75,32 +126,25 @@ struct CardView: View {
                         .fontWeight(.bold)
                         .font(.title)
                         .foregroundColor(.white)
-                    Text("this is awesome design cource")
+                    Text("this is awesome design course")
                         .font(.subheadline)
                         .foregroundColor(.white)
                 }
             }.padding(.bottom,20)
             
         }
-        .background(Color.black)
-        .cornerRadius(20)
-        .shadow(radius:20)
-        .padding(.top,20)
-        .padding(.horizontal,20)
+        
     }
 }
 
 struct BackCardView: View {
     var body: some View {
         VStack{
-            Text("Awesome courses")
             Spacer()
         }
         .frame(width:340,height:220)
         .padding(.top,30)
-        .background(Color.green)
-        .cornerRadius(20)
-        .shadow(radius: 20)
+        
         
     }
 }
@@ -116,6 +160,10 @@ struct TitleView: View {
                 Spacer()
                 Image("writing")
             }.padding()
+            Image("banner")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .padding(.top,-80)
             Spacer()
         }
     }
@@ -129,8 +177,8 @@ struct BottomCardView: View {
                 .cornerRadius(3)
                 .opacity(0.3)
             Text("This courses are proof that david to has achieved the UI Design course with approval from a Design academy instructor")
-                .multilineTextAlignment(.center)
-                .font(.subheadline)
+                .multilineTextAlignment(.leading)
+                .font(.headline)
                 .lineSpacing(4)
             Spacer()
         }
