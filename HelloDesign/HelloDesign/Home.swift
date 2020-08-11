@@ -24,6 +24,7 @@ struct Home: View {
             .scaleEffect(showProfile ? 0.9 : 1)
             .animation(.spring(response:0.5,dampingFraction:0.6,blendDuration:0))
             .edgesIgnoringSafeArea(.all)
+            .blur(radius: showProfile ? 3 : 0)
             
         MenuView()
             .background(Color.black.opacity(0.01))

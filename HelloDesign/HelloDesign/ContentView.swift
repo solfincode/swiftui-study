@@ -34,8 +34,7 @@ struct ContentView: View {
                 .offset(y:showCard ? -120 : -5)
                 .scaleEffect(0.9)
                 .rotationEffect(.degrees(showCard ? 0 : 10))
-
-//                .blendMode(.hardLight)
+                .blendMode(.hardLight)
                 .animation(.easeInOut(duration:0.5))
             BackCardView()
                 .background(Color.green)
@@ -47,7 +46,7 @@ struct ContentView: View {
                 .offset(x:0,y:showCard ? -100 : -15)
                 .scaleEffect(0.95)
                 .rotationEffect(.degrees(showCard ? 0 : 5))
-//                .blendMode(.hardLight)
+                .blendMode(.hardLight)
                 .animation(.easeInOut(duration:0.3))
             CardView()
                 .offset(x:viewState.width,y:viewState.height)
@@ -77,7 +76,7 @@ struct ContentView: View {
 //            Text("\(bottomState.height)").offset(y:-300)
             
             BottomCardView()
-                .offset(x:0,y:showCard ? 5 : 300)
+                .offset(x:0,y:showCard ? 5 : 400)
                 .offset(y:bottomState.height)
                 .animation(.timingCurve(0.2, 0.28, 0.2, 0.1))
                 .gesture(
@@ -131,7 +130,6 @@ struct CardView: View {
                         .foregroundColor(.white)
                 }
             }.padding(.bottom,20)
-            
         }
         
     }
@@ -156,14 +154,12 @@ struct TitleView: View {
                 Text("Courses")
                     .font(.largeTitle)
                     .fontWeight(.bold)
-                
                 Spacer()
-                Image("writing")
             }.padding()
-            Image("banner")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .padding(.top,-80)
+//            Image("banner")
+//                .resizable()
+//                .aspectRatio(contentMode: .fit)
+//                .padding(.top,-80)
             Spacer()
         }
     }
